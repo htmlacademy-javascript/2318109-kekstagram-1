@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Madina Shumakhova](https://up.htmlacademy.ru/javascript-individual/1/user/2318109).
-* Наставник: `Неизвестно`.
+* Наставник: [Геннадий Максимов](https://up.htmlacademy.ru/javascript-individual/1/user/2318109).
 
 ---
 
