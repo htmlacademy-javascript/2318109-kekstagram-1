@@ -26,6 +26,8 @@ const DESCRIPTIONS = [
   'Одинокое дерево'
 ];
 
+const photosQuantity = 25;
+
 const getRandomInteger = (min, max) => {
   const minInteger = Math.ceil(Math.min(min, max));
   const maxInteger = Math.floor(Math.max(min, max));
@@ -50,6 +52,6 @@ const createPhotos = () => ({
   comments: Array.from({length : getRandomInteger(1, 6)}, generateComments)
 });
 
-const getPhotos = Array.from({length: 25}, createPhotos);
+const getPhotos = () => Array.from({length: photosQuantity}, createPhotos);
 
-console.log(getPhotos);
+getPhotos();
