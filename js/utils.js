@@ -16,7 +16,6 @@ const createIndexGenerator = () => {
   };
 };
 
-export {getRandomInteger,
+export { getRandomInteger,
   getRandomArrayElement,
-  createIndexGenerator
-};
+  createIndexGenerator };
