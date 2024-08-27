@@ -16,6 +16,9 @@ const createIndexGenerator = () => {
   };
 };
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 export { getRandomInteger,
   getRandomArrayElement,
-  createIndexGenerator };
+  createIndexGenerator,
+  isEscapeKey };
