@@ -1,8 +1,7 @@
 import { isEscapeKey } from './utils.js';
 import { initComments, destroyComments } from './comments.js';
 import { HIDDEN_CLASS } from './constants.js';
-
-const MODAL_OPEN_CLASS = 'modal-open';
+import { MODAL_OPEN_CLASS } from './constants.js';
 
 const body = document.querySelector('body');
 const bigPicture = body.querySelector('.big-picture');
