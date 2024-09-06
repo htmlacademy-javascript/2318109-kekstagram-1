@@ -2,6 +2,8 @@ import { MODAL_OPEN_CLASS } from './constants.js';
 import { HIDDEN_CLASS } from './constants.js';
 import { isEscapeKey } from './utils.js';
 import { validate } from './validation.js';
+import { resetScale } from './scale.js';
+import { resetEffects } from './effects.js';
 
 const body = document.querySelector('body');
 const pictureInputFile = body.querySelector('#upload-file');
@@ -19,6 +21,8 @@ const clearPictureForm = () => {
   pictureInputFile.value = '';
   commentInput.value = '';
   hashtagInput.value = '';
+  resetScale();
+  resetEffects();
 };
 
 const disabledSubmitBtn = () => {
@@ -83,6 +87,7 @@ function onPictureInputFileChange() {
 
 function onPicturePopupCloseBtnClick() {
   closePopup();
+  removeEventListeners();
 }
 
 submitForm();
