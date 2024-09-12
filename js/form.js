@@ -1,95 +1,84 @@
-import { MODAL_OPEN_CLASS } from './constants.js';
-import { HIDDEN_CLASS } from './constants.js';
+import { isValid } from './validation.js';
+import { sendData } from './api.js';
+import { closeModal } from './modal.js';
 import { isEscapeKey } from './utils.js';
-import { validate } from './validation.js';
-import { resetScale } from './scale.js';
-import { resetEffects } from './effects.js';
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикуется...'
+};
 
 const body = document.querySelector('body');
-const pictureInputFile = body.querySelector('#upload-file');
-const picturePopupCloseBtn = body.querySelector('#upload-cancel');
-const picturePopup = body.querySelector('.img-upload__overlay');
-const pictureSubmitBtn = body.querySelector('.img-upload__submit');
-const commentInput = body.querySelector('.text__description');
-const hashtagInput = body.querySelector('.text__hashtags');
+const form = body.querySelector('.img-upload__form');
+const pictureSubmitBtn = form.querySelector('.img-upload__submit');
+const successMessageTemplate = body.querySelector('#success')
+  .content
+  .querySelector('.success');
+const errorMessageTemplate = body.querySelector('#error')
+  .content
+  .querySelector('.error');
 
-const isTextInputFocused = () =>
-  document.activeElement === commentInput ||
-  document.activeElement === hashtagInput;
-
-const clearPictureForm = () => {
-  pictureInputFile.value = '';
-  commentInput.value = '';
-  hashtagInput.value = '';
-  resetScale();
-  resetEffects();
-};
-
-const disabledSubmitBtn = () => {
-  if (validate()) {
-    pictureSubmitBtn.disabled = false;
-  } else {
-    pictureSubmitBtn.disabled = true;
-  }
-};
-
-const closePopup = () => {
-  clearPictureForm();
-  picturePopup.classList.add(HIDDEN_CLASS);
-  body.classList.remove(MODAL_OPEN_CLASS);
-};
-
-const openPopup = () => {
-  picturePopup.classList.remove(HIDDEN_CLASS);
-  body.classList.add(MODAL_OPEN_CLASS);
-
-  picturePopupCloseBtn.addEventListener('click', onPicturePopupCloseBtnClick);
-  document.addEventListener('keydown', onDocumentKeydown);
-};
-
-const submitForm = () => {
-  commentInput.addEventListener('input', onDisabledFormSubmitBtn);
-  hashtagInput.addEventListener('input', onDisabledFormSubmitBtn);
-  pictureSubmitBtn.addEventListener('submit', onFormSubmitBtn);
-};
-
-const openInputFileModal = () => {
-  pictureInputFile.addEventListener('change', onPictureInputFileChange);
-};
-
-const removeEventListeners = () => {
-  picturePopupCloseBtn.removeEventListener('click', onPicturePopupCloseBtnClick);
+const closeMessage = () => {
+  const message = document.querySelector('.message');
   document.removeEventListener('keydown', onDocumentKeydown);
-  pictureSubmitBtn.removeEventListener('submit', onFormSubmitBtn);
-  commentInput.removeEventListener('input', onDisabledFormSubmitBtn);
-  hashtagInput.removeEventListener('input', onDisabledFormSubmitBtn);
+  message.remove();
 };
-
-function onFormSubmitBtn(evt) {
-  evt.preventDefault();
-}
-
-function onDisabledFormSubmitBtn() {
-  disabledSubmitBtn();
-}
 
 function onDocumentKeydown(evt) {
-  if (isEscapeKey(evt) && !isTextInputFocused()) {
+  if (isEscapeKey(evt)) {
     evt.preventDefault();
-    closePopup();
-    removeEventListeners();
+    closeMessage();
   }
 }
 
-function onPictureInputFileChange() {
-  openPopup();
+const renderMessage = (message) => {
+  const messageElement = message.cloneNode(true);
+  const messageCloseButton = messageElement.querySelector('button');
+
+  messageCloseButton.addEventListener('click', () => closeMessage());
+
+  messageElement.addEventListener('click', (evt) => {
+    if(evt.target.matches('.message')) {
+      closeMessage();
+    }
+  });
+  document.addEventListener('keydown', onDocumentKeydown);
+
+  body.insertAdjacentElement('beforeend', messageElement);
+};
+
+const blockSubmitButton = () => {
+  pictureSubmitBtn.disabled = true;
+  pictureSubmitBtn.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  pictureSubmitBtn.disabled = false;
+  pictureSubmitBtn.textContent = SubmitButtonText.IDLE;
+};
+
+const formSendData = (evt) => {
+  if(isValid) {
+    blockSubmitButton();
+    sendData(new FormData(evt.target))
+      .then(closeModal)
+      .then(() => {
+        renderMessage(successMessageTemplate);
+      })
+      .catch(() => {
+        renderMessage(errorMessageTemplate);
+      })
+      .finally(unblockSubmitButton);
+  }
+};
+
+function onFormSubmitBtn (evt) {
+  evt.preventDefault();
+  formSendData(evt);
 }
 
-function onPicturePopupCloseBtnClick() {
-  closePopup();
-  removeEventListeners();
-}
+const submitForm = () => {
+  form.addEventListener('submit', onFormSubmitBtn);
+};
 
-submitForm();
-
-export { openInputFileModal };
+export { submitForm };

@@ -119,9 +119,10 @@ const onEffectsChange = (evt) => {
 };
 
 const resetEffects = () => {
+  sliderElement.noUiSlider.set(defaultEffect.max);
   picturePreview.style.filter = '';
   picturePreview.className = 'effects__preview--none';
-  sliderElement.noUiSlider.set(defaultEffect.max);
+  hideSlider();
 };
 
 effectsElement.addEventListener('change', onEffectsChange);

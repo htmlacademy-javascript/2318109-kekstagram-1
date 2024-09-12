@@ -30,6 +30,6 @@ const validateTags = (tags) => {
 
 pristine.addValidator(hashtagInput, validateTags, ERROR_TEXT);
 
-const validate = () => pristine.validate();
+const isValid = () => pristine.validate();
 
-export { validate };
+export { isValid };
