@@ -1,16 +1,16 @@
 import { renderGallery } from './gallery.js';
-import { openInputFileModal } from './modal.js';
 import { getData } from './api.js';
 import { showAlert } from './utils.js';
-import { submitForm } from './form.js';
+import { initUploadPictureModal } from './upload.js';
+import { initFilters } from './filters.js';
 
+
+initUploadPictureModal();
 getData()
   .then((picturesData) => {
+    initFilters(picturesData);
     renderGallery(picturesData);
   })
   .catch((err) => {
     showAlert(err.message);
   });
-
-openInputFileModal();
-submitForm();

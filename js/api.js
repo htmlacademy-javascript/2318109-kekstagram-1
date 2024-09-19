@@ -24,7 +24,6 @@ const loadData = (route, errorText, method = Method.GET, body = null) =>
       throw new Error(errorText);
     });
 
-
 const getData = () => loadData(Route.GET_DATA, ErrorText.GET_DATA);
 const sendData = (body) => loadData(Route.SEND_DATA, ErrorText.SEND_DATA, Method.POST, body);
 

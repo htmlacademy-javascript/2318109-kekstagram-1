@@ -1,26 +1,34 @@
+let data = [];
+
 const thumbnailsContainer = document.querySelector('.pictures');
 const thumbnailTemplate = document.querySelector('#picture')
   .content
   .querySelector('.picture');
 
-const createThumbnail = ({likes, comments, url, id}) => {
-  const thumbnailElement = thumbnailTemplate.cloneNode(true);
-  thumbnailElement.querySelector('.picture__likes').textContent = likes;
-  thumbnailElement.querySelector('.picture__comments').textContent = comments.length;
-  thumbnailElement.querySelector('.picture__img').src = url;
-  thumbnailElement.dataset.thumbnailId = id;
+const createThumbnails = (pictures) => {
+  pictures.forEach((picture) => {
+    const thumbnailElement = thumbnailTemplate.cloneNode(true);
+    thumbnailElement.querySelector('.picture__likes').textContent = picture.likes;
+    thumbnailElement.querySelector('.picture__comments').textContent = picture.comments.length;
+    thumbnailElement.querySelector('.picture__img').src = picture.url;
+    thumbnailElement.dataset.thumbnailId = picture.id;
+    thumbnailsContainer.appendChild(thumbnailElement);
+  });
+};
 
-  return thumbnailElement;
+const updateThumbnails = (pictures) => {
+  data = pictures.slice();
+  const thumbnails = document.querySelectorAll('.picture');
+  thumbnails.forEach((item) => item.remove());
+
+  createThumbnails(data);
 };
 
 const renderThumbnails = (pictures) => {
-  const thumbnailsFragment = document.createDocumentFragment();
-  pictures.forEach((picture) => {
-    const thumbnail = createThumbnail(picture);
-    thumbnailsFragment.append(thumbnail);
-  });
+  data = pictures.slice();
+  createThumbnails(data);
 
-  thumbnailsContainer.append(thumbnailsFragment);
+  updateThumbnails(data);
 };
 
-export { renderThumbnails };
+export { renderThumbnails, updateThumbnails };
