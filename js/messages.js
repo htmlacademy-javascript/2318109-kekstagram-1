@@ -8,49 +8,51 @@ const errorMessageTemplate = body.querySelector('#error')
   .content
   .querySelector('.error');
 
-const isSuccessMessage = (message) => {
-  if(message === successMessageTemplate) {
-    return successMessageTemplate;
-  } else {
-    return errorMessageTemplate;
-  }
-};
-
 const closeMessage = () => {
-  const message = document.querySelector('.message');
+  const message =
+  document.querySelector('.success') || document.querySelector('.error');
+
   message.remove();
+  document.removeEventListener('keydown', onDocumentKeydown);
 };
 
-const onDocumentKeydown = (evt) => {
+function onDocumentKeydown(evt) {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeMessage();
   }
+}
+
+const onMessageCloseButtonClick = () => {
+  closeMessage();
 };
 
-const renderMessage = (message) => {
-  isSuccessMessage(message);
-  const messageCloseButton = message.querySelector('button');
-
-  messageCloseButton.addEventListener('click', () => closeMessage());
-
-  message.addEventListener('click', (evt) => {
-    if(evt.target.matches('.message')) {
-      closeMessage();
-    }
-  });
-
-  document.addEventListener('keydown', onDocumentKeydown, {once:true});
-
-  body.insertAdjacentElement('beforeend', message);
+const onOutsideMessageClick = (evt) => {
+  if(evt.target.matches('.message')) {
+    closeMessage();
+  }
 };
 
 const initSuccessMessage = () => {
-  renderMessage(successMessageTemplate);
+  const successMessage = successMessageTemplate;
+  const successMessageButton = successMessageTemplate.querySelector('button');
+
+  body.insertAdjacentElement('beforeend', successMessage);
+
+  successMessage.addEventListener('click', onOutsideMessageClick);
+  document.addEventListener('keydown', onDocumentKeydown);
+  successMessageButton.addEventListener('click', onMessageCloseButtonClick);
 };
 
 const initErrorMessage = () => {
-  renderMessage(errorMessageTemplate);
+  const errorMessage = errorMessageTemplate;
+  const errorMessageButton = errorMessageTemplate.querySelector('button');
+
+  body.insertAdjacentElement('beforeend', errorMessage);
+
+  errorMessage.addEventListener('click', onOutsideMessageClick);
+  document.addEventListener('keydown', onDocumentKeydown);
+  errorMessageButton.addEventListener('click', onMessageCloseButtonClick);
 };
 
 export { initSuccessMessage, initErrorMessage };
